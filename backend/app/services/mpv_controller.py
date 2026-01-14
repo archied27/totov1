@@ -2,10 +2,17 @@ import socket
 import json
 import os
 import subprocess
+import re
 
 MPV_SOCKET = "/tmp/mpvsocket"
 MOVIES_PATHS = ["/media/tssd/movies"]
 SHOWS_PATHS = ["/media/tssd/shows"]
+
+def removeID(filename: str):
+    match = re.match(r"^\((\d+)\)(.+)$", filename)
+    if not match:
+        return {'id': None, 'newfile': filename}
+    return {'id': match.group(1), 'newfile': match.group(2)}
 
 def testMpv():
     client = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
@@ -80,8 +87,11 @@ def getMovies():
         for f in os.listdir(path):
             file = os.path.join(path, f)
             if os.path.isfile(file):
-                title = f.replace("-", " ")
-                movies[title[:-4]] = file
+                splitFile = removeID(f)
+                print(splitFile)
+                title = splitFile['newfile'].replace("-", " ")
+                movie = {"title": title[:-4], "path":file}
+                movies[splitFile['id']] = movie
     return movies
 
 def getShows():
