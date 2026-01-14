@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 from pydantic import BaseModel
-from app.services.mpv_controller import getCurrTitle, play, closeMpv, fullscreen, playPause
+from app.services.mpv_controller import getCurrTitle, play, closeMpv, fullscreen, playPause, getPause
 
 router = APIRouter()
 
@@ -23,7 +23,11 @@ def close():
 def fscreen():
     return fullscreen(True)
 
-@router.post("/playPause")
+@router.post("/togglePause")
 def tPause():
     return playPause()
+
+@router.post("/getPause")
+def gPause():
+    return getPause()
 
