@@ -4,6 +4,8 @@ import os
 import subprocess
 
 MPV_SOCKET = "/tmp/mpvsocket"
+MOVIES_PATHS = ["/media/tssd/movies"]
+SHOWS_PATHS = ["/media/tssd/shows"]
 
 def testMpv():
     client = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
@@ -71,3 +73,40 @@ def getPause():
         return {"pause": None, "status": "mpv not open in correct mode"}
     else:
         return {"pause": response.get('data')}
+
+def getMovies():
+    movies = {}
+    for path in MOVIES_PATHS:
+        for f in os.listdir(path):
+            file = os.path.join(path, f)
+            if os.path.isfile(file):
+                title = f.replace("-", " ")
+                movies[title[:-4]] = file
+    return movies
+
+def getShows():
+    shows = {}
+    for path in SHOWS_PATHS:
+        for subpath in os.listdir(path):
+            if not os.path.isfile(os.path.join(path, subpath)):
+                title = subpath.replace("-", " ")
+                shows[title] = os.path.join(path, subpath)
+    return shows
+
+def getSeasons(showPath: str):
+    seasons = {}
+    for path in os.listdir(showPath):
+        if not os.path.isfile(os.path.join(showPath, path)):
+            if path[0]=='s':
+                season = f"Season {path[1:]}"
+                seasons[season] = os.path.join(showPath, path)
+    return seasons
+
+def getEpisodes(seasonPath: str):
+    episodes = {}
+    for path in os.listdir(seasonPath):
+        if os.path.isfile(os.path.join(seasonPath, path)):
+            if path[0]=='e':
+                episode = f"Episode {path[1:-4]}"
+                episodes[episode] = os.path.join(seasonPath, path)
+    return episodes
