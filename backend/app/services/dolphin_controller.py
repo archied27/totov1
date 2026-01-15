@@ -2,11 +2,25 @@ import socket
 import json
 import os
 import subprocess
+import asyncio
 
 GAME_PATHS = ["/media/tssd/games/gamecube"]
 
-def close():
-    return subprocess.run(["pkill", "-f", "dolphin-emu"]).returncode
+def sendKey(key: str):
+    if subprocess.run(["hyprctl", "dispatch", "focuswindow", "class:dolphin-emu"]).returncode == 0:
+        subprocess.run(["xdotool", "key", key])
+        return {"status": "key sent"}
+
+    return {"status": "not open"}
+
+async def close():
+    if subprocess.run(["hyprctl", "dispatch", "focuswindow", "class:dolphin-emu"]).returncode == 0:
+        subprocess.run(["xdotool", "key", "q"])
+        await asyncio.sleep(1)
+        subprocess.run(["xdotool", "key", "y"])
+        return {"status": "closed"}
+
+    return {"status": "not open"}
     
 def open(path: str):
     close()
@@ -22,3 +36,15 @@ def getGames():
                 if os.path.isfile(gamePath):
                     games[subpath] =  gamePath
     return games
+
+def fullscreen():
+    resp = sendKey("f")
+    if resp[status] == "not open":
+        return {"status": "not open"}
+    return {"status": "fullscreen toggled"}
+
+def pause():
+    resp = sendKey("p")
+    if resp[status] == "not open":
+        return resp
+    return {"status": "pause toggled"}

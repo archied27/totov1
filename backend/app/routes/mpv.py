@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 from pydantic import BaseModel
-from app.services.mpv_controller import getCurrTitle, play, closeMpv, fullscreen, playPause, getPause, getMovies, getShows, getEpisodes, getSeasons
+from app.services.mpv_controller import getCurrTitle, play, closeMpv, fullscreen, playPause, getPause, getMovies, getShows, getEpisodes, getSeasons, getMoviesDetails, getDetails, getShowsDetails
 
 router = APIRouter()
 
@@ -46,3 +46,19 @@ def gSeasons(path: str):
 @router.get("/episodesList")
 def gEpisodes(path: str):
     return getEpisodes(path)
+
+@router.get("/movieListPlus")
+def gMoviesPlus():
+    return getMoviesDetails()
+
+@router.get("/movieDetails")
+def getMovieDetails(id: int):
+    return getDetails("movie", id)
+
+@router.get("/showDetails")
+def getShowDetails(id: int):
+    return getDetails("tv", id)
+
+@router.get("/showListPlus")
+def gShowsPlus():
+    return getShowsDetails()

@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 from pydantic import BaseModel
-from app.services.dolphin_controller import open, close, getGames
+from app.services.dolphin_controller import open, close, getGames, fullscreen, pause
 
 router = APIRouter()
 
@@ -12,9 +12,18 @@ def openGame(req: OpenRequest):
     return open(req.filePath)
 
 @router.post("/close")
-def closeDolph():
-    return close()
+async def closeDolph():
+    result = await close()
+    return result
 
 @router.get("/gameList")
 def getGameList():
     return getGames()
+
+@router.post("/fullscreen")
+def fScreen():
+    return fullscreen()
+
+@router.post("/playPause")
+def pPause():
+    return pause()

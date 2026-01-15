@@ -3,10 +3,15 @@ import json
 import os
 import subprocess
 import re
+import dotenv
+from app.services.tmdb_api import MovieFinder
 
 MPV_SOCKET = "/tmp/mpvsocket"
 MOVIES_PATHS = ["/media/tssd/movies"]
 SHOWS_PATHS = ["/media/tssd/shows"]
+dotenv.load_dotenv()
+tmdbApiKey = os.environ.get('TMDB_API_KEY')
+tmdbFinder = MovieFinder(tmdbApiKey)
 
 def removeID(filename: str):
     match = re.match(r"^\((\d+)\)(.+)$", filename)
@@ -56,7 +61,7 @@ def getCurrTitle():
 
 def play(path: str):
     closeMpv()
-    subprocess.Popen(["mpv", path, f"--input-ipc-server={MPV_SOCKET}"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, start_new_session=True)
+    subprocess.Popen(["mpv", path, "-fs", f"--input-ipc-server={MPV_SOCKET}"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, start_new_session=True)
     return{"status": "started", "file": path}
 
 def fullscreen(val: bool):
@@ -88,7 +93,6 @@ def getMovies():
             file = os.path.join(path, f)
             if os.path.isfile(file):
                 splitFile = removeID(f)
-                print(splitFile)
                 title = splitFile['newfile'].replace("-", " ")
                 movie = {"title": title[:-4], "path":file}
                 movies[splitFile['id']] = movie
@@ -99,8 +103,10 @@ def getShows():
     for path in SHOWS_PATHS:
         for subpath in os.listdir(path):
             if not os.path.isfile(os.path.join(path, subpath)):
-                title = subpath.replace("-", " ")
-                shows[title] = os.path.join(path, subpath)
+                splitFile = removeID(subpath)
+                title = splitFile['newfile'].replace("-", " ")
+                show = {"title": title, "path":os.path.join(path,subpath)}
+                shows[splitFile['id']] = show
     return shows
 
 def getSeasons(showPath: str):
@@ -120,3 +126,30 @@ def getEpisodes(seasonPath: str):
                 episode = f"Episode {path[1:-4]}"
                 episodes[episode] = os.path.join(seasonPath, path)
     return episodes
+
+def getPathBeingPlayed():
+    resp = send_mpv_command("get_property", ["path"])
+    if resp == -1 or resp.get("error") != "success":
+        return {"path": None}
+    return {"path": resp.get("data")}
+
+def getDetails(format: string, id: int):
+    # format: tv or movie
+    return tmdbFinder.getDetails(format, id)
+
+def getMoviesDetails():
+    movies = getMovies()
+    details = {}
+    if movies != {}:
+        for id in movies:
+            details[id] = getDetails("movie", id)
+    return details
+
+def getShowsDetails():
+    shows = getShows()
+    details = {}
+    if shows != {}:
+        for id in shows:
+            print(id)
+            details[id] = getDetails("tv", id)
+    return details
