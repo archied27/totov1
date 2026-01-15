@@ -1,5 +1,15 @@
 import { apiGet, apiPost } from "./client";
 
+type MovieSummary = {
+  title: string,
+  poster_path: string
+  file_path: string
+}
+
+type MovieDetails = {
+  [key: string]: MovieSummary
+}
+
 export function getTitle() {
   return apiGet<{ title: string | null }>("/mpv/title");
 }
@@ -22,4 +32,8 @@ export function togglePlay() {
 
 export function getPause(): Promise<{pause: boolean}> {
   return apiGet<{pause: boolean}>("/mpv/getPause");
+}
+
+export function showMovieList(): Promise<MovieDetails> {
+  return apiGet<MovieDetails>("/mpv/movieListPlus")
 }
