@@ -27,7 +27,7 @@ def fscreen():
 def tPause():
     return playPause()
 
-@router.post("/getPause")
+@router.get("/getPause")
 def gPause():
     return getPause()
 
