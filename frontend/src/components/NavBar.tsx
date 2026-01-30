@@ -1,4 +1,3 @@
-import * as React from "react";
 import BottomNavigation from "@mui/material/BottomNavigation";
 import BottomNavigationAction from "@mui/material/BottomNavigationAction";
 import Paper from "@mui/material/Paper";
@@ -23,7 +22,7 @@ export default function TopNav() {
     >
       <BottomNavigation
         value={location.pathname}
-        onChange={(event, newValue) => {
+        onChange={(_event, newValue) => {
           navigate(newValue);
         }}
         showLabels

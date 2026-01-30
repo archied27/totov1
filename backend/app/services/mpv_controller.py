@@ -54,13 +54,15 @@ def send_mpv_command(command: str, args=None):
         return json.loads(response.decode("utf-8"))
 
 def getCurrTitle():
-    resp = send_mpv_command("get_property", ["media-title"])
-    if resp == -1:
+    resp = getPathBeingPlayed()
+    if resp["path"] == None:
         return {"title": None, "error": "mpv not open in correct mode"}
-    elif resp.get("error") != "success":
-        return {"title": None, "error": resp.get("error")}
     else:
-        return {"title": resp.get("data")}
+        fName = resp["path"]
+        while(fName[0] == '/'):
+            fName = fName[1:]
+            print(fName)
+
 
 def play(path: str):
     closeMpv()
@@ -155,6 +157,5 @@ def getShowsDetails():
     details = {}
     if shows != {}:
         for id in shows:
-            print(id)
             details[id] = getDetails("tv", id)
     return details
