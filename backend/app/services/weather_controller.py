@@ -21,4 +21,12 @@ def getTodaysWeather():
     return sendRequest("forecast.json")
 
 def getCurrentWeather():
-    return sendRequest("current.json")
+    resp = sendRequest("current.json")
+    weather = {}
+    if resp:
+        weather["location"] = resp["location"]["name"]
+        weather["temp"] = resp["current"]["temp_c"]
+        weather["condition"] = resp["current"]["condition"]["text"]
+        weather["icon"] = resp["current"]["condition"]["icon"]
+        weather["precip"] = resp["current"]["precip_mm"]
+    return weather

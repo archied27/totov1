@@ -15,14 +15,13 @@ export default function NowPlaying() {
     };
 
     load();
-    const interval = setInterval(load, 5000);
+    const interval = setInterval(load, 10000);
     return () => clearInterval(interval);
   }, []);
 
   return (
     <div className="now-playing">
-      <h2>Now Playing</h2>
-      <p>{title ?? "Nothing playing"}</p>
+      <p>{title ?? ""}</p>
     </div>
   );
 }

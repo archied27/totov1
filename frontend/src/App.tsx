@@ -1,13 +1,31 @@
-import MovieList from "./components/MovieList";
-import NowPlaying from "./components/NowPlaying";
-import Remote from "./components/Remote";
+import { Routes, Route } from "react-router-dom";
+import { ThemeProvider, createTheme, CssBaseline } from "@mui/material";
+import MpvBrowser from "./pages/MpvBrowser"
+import Dashboard from "./pages/Dashboard"
+import TopNav from "./components/NavBar";
 
-export default function App() {
+function App() {
+  const theme = createTheme({
+  palette: {
+    mode: "dark",
+    primary: {
+      main: "#698194ff",
+    },
+  },
+  shape: {
+    borderRadius: 12,
+  },
+  });
   return (
-    <div className="app">
-      <NowPlaying />
-      <Remote />
-      <MovieList />
-    </div>
+    <ThemeProvider theme={theme}>
+      <CssBaseline/>
+      <TopNav />
+      <Routes>
+        <Route path="/" element={<Dashboard />} />
+        <Route path="/movies" element={<MpvBrowser />}/>
+      </Routes>
+    </ThemeProvider>
   );
 }
+
+export default App;

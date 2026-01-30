@@ -1,5 +1,6 @@
 import { showMovieList, play } from "../api/mpv";
 import { useEffect, useState } from "react";
+import { Grid, Box } from "@mui/material";
 
 // Type definition for your movies
 type MovieDetails = {
@@ -24,20 +25,24 @@ export default function MovieList() {
 
 
   return (
-    <div className="movie-grid">
+    <Grid container spacing={2}>
       {movies
         ? Object.entries(movies).map(([id, movie]) => (
-            <div key={id} className="movie-card">
-              <img
-                src={`https://image.tmdb.org/t/p/w200${movie.poster_path}`}
-                alt={movie.title}
-                onClick={() => play(movie.file_path) }
-                className="poster"
-              />
-            </div>
+            <Grid key={id} size={{xs:4, sm:3, md: 2}}>
+              <Box sx={{
+                cursor: "pointer",
+                "&:hover": { transform: "scale(1.05)"},
+                display: "flex",
+                transition: "transform 0.2s",
+                justifyContent: "center"
+              }} onClick={() => play(movie.file_path)}>
+                <img src={`https://image.tmdb.org/t/p/w200${movie.poster_path}`} alt={movie.title} style={{ width: "100%", height:"auto", borderRadius: 8}}/>
+              </Box>
+
+            </Grid>
           ))
         : <p>Loading...</p>
       }
-    </div>
+    </Grid>
   );
 }

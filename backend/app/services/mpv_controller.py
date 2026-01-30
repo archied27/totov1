@@ -13,6 +13,9 @@ dotenv.load_dotenv()
 tmdbApiKey = os.environ.get('TMDB_API_KEY')
 tmdbFinder = MovieFinder(tmdbApiKey)
 
+def focusHDMI():
+    return subprocess.run(["hyprctl", "dispatch", "focusmonitor", "HDMI-A-1"])
+
 def removeID(filename: str):
     match = re.match(r"^\((\d+)\)(.+)$", filename)
     if not match:
@@ -61,6 +64,7 @@ def getCurrTitle():
 
 def play(path: str):
     closeMpv()
+    focusHDMI()
     subprocess.Popen(["mpv", path, "-fs", f"--input-ipc-server={MPV_SOCKET}"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, start_new_session=True)
     return{"status": "started", "file": path}
 
@@ -143,6 +147,7 @@ def getMoviesDetails():
     if movies != {}:
         for id in movies:
             details[id] = getDetails("movie", id)
+            details[id]["file_path"] = movies[id]["path"]
     return details
 
 def getShowsDetails():
