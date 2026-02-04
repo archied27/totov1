@@ -58,10 +58,14 @@ def getCurrTitle():
     if resp["path"] == None:
         return {"title": None, "error": "mpv not open in correct mode"}
     else:
+        c = -1
         fName = resp["path"]
-        while(fName[0] == '/'):
-            fName = fName[1:]
-            print(fName)
+        while(fName[c] != '/'):
+            c-=1
+        fName = fName[c+1:]
+        splitFile = removeID(fName)
+        title = splitFile['newfile'].replace("-", " ")
+        return {"title": title[:-4], "error": None}
 
 
 def play(path: str):
