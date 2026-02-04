@@ -36,9 +36,8 @@ export default function MovieList() {
                 transition: "transform 0.2s",
                 justifyContent: "center"
               }} onClick={() => play(movie.file_path)}>
-                <img src={`https://image.tmdb.org/t/p/w200${movie.poster_path}`} alt={movie.title} style={{ width: "100%", height:"auto", borderRadius: 8}}/>
+                <img src={`https://image.tmdb.org/t/p/original${movie.poster_path}`} alt={movie.title} style={{ width: "100%", height:"auto", borderRadius: 8}}/>
               </Box>
-
             </Grid>
           ))
         : <p>Loading...</p>

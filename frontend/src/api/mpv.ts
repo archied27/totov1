@@ -35,5 +35,13 @@ export function getPause(): Promise<{pause: boolean}> {
 }
 
 export function showMovieList(): Promise<MovieDetails> {
-  return apiGet<MovieDetails>("/mpv/movieListPlus")
+  return apiGet<MovieDetails>("/mpv/movieListPlus");
+}
+
+export function getCurrentDetails(): Promise<MovieSummary>{
+  return apiGet<MovieSummary>("/mpv/getCurrentDetails");
+}
+
+export function isMpvOn() {
+  return apiGet<{status: boolean}>("/mpv/isOn");
 }

@@ -17,7 +17,7 @@ export default function TopNav() {
       sx={{
         position: "sticky",
         top: 0,
-        zIndex: 1100,
+        zIndex: 1000,
       }}
     >
       <BottomNavigation
