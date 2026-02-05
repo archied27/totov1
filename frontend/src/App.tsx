@@ -3,6 +3,7 @@ import { ThemeProvider, createTheme, CssBaseline } from "@mui/material";
 import MpvBrowser from "./pages/MpvBrowser"
 import Dashboard from "./pages/Dashboard"
 import TopNav from "./components/NavBar";
+import GameBrowser from "./pages/GameBrowser";
 
 function App() {
   const theme = createTheme({
@@ -23,6 +24,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Dashboard />} />
         <Route path="/movies" element={<MpvBrowser />}/>
+        <Route path="/games" element={<GameBrowser />}/>
       </Routes>
     </ThemeProvider>
   );

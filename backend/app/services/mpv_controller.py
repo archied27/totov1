@@ -163,3 +163,16 @@ def getShowsDetails():
         for id in shows:
             details[id] = getDetails("tv", id)
     return details
+
+def getCurrentDetails():
+    path = getPathBeingPlayed()['path']
+    if "shows" in path:
+        format = "tv"
+    else:
+        format = "movie"
+    c = -1
+    while(path[c] != '/'):
+            c-=1
+    path = path[c+1:]
+    splitFile = removeID(path)
+    return getDetails(format, splitFile['id'])

@@ -40,7 +40,7 @@ export default function RightMainCard() {
             <CardContent>
                 { movieDetails ?
                 <Box sx={{display:"flex", alignItems: "center", flexDirection:"row", gap: 0}}>
-                    <Box sx={{display: "flex", p:0, width: "100%", height:"100%", objectFit:"cover"}}>
+                    <Box sx={{display: "flex", p:1, width: "100%", justifyContent:"center", height:"100%", objectFit:"cover"}}>
                         <img src={`https://image.tmdb.org/t/p/original${movieDetails.poster_path}`} alt={movieDetails.title} style={{ width: "100%", maxWidth: "42vh", maxHeight: "79vh", height:"auto", borderRadius: 8}}/>
                     </Box>
                     <Box sx={{display:"flex", gap:1, width:"100%", height:"100%", alignItems:"center", alignContent:"content", flexDirection:"column"}}>

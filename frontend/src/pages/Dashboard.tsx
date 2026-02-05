@@ -4,7 +4,7 @@ import RightMainCard from "../components/RightMainCard";
 
 export default function Dashboard() {
   return (
-    <Box sx={{ p: 2, height: "80vh" }}>
+    <Box sx={{ p: 2, height: "80vh", overflow:"hidden" }}>
       <Grid 
         container 
         spacing={1} 
@@ -13,10 +13,10 @@ export default function Dashboard() {
           height: "100%"
         }}
       >
-        <Grid size={{ xs: 12, sm: 4 }} height="100%">
+        <Grid size={{ xs: 12, sm: 4 }}>
           <LeftMainCard />
         </Grid>
-        <Grid size={{ xs: 12, sm: 8 }} height="100%">
+        <Grid size={{ xs: 12, sm: 8 }} sx={{flexGrow:1}}>
           <RightMainCard/>
         </Grid>
       </Grid>

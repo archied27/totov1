@@ -1,7 +1,7 @@
 import { apiGet, apiPost } from "./client";
 
 type GamesList = {
-    [key: string]: [game_path: string]
+    [key: string]: string
 }
 
 export function play(filePath: string) {

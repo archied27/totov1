@@ -8,8 +8,8 @@ class OpenRequest(BaseModel):
     filePath: str
 
 @router.post("/play")
-def openGame(req: OpenRequest):
-    return open(req.filePath)
+async def openGame(req: OpenRequest):
+    return await open(req.filePath)
 
 @router.post("/close")
 async def closeDolph():

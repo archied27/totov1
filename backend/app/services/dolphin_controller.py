@@ -6,6 +6,9 @@ import asyncio
 
 GAME_PATHS = ["/media/tssd/games/gamecube"]
 
+def focusHDMI():
+    return subprocess.run(["hyprctl", "dispatch", "focusmonitor", "HDMI-A-1"])
+
 def sendKey(key: str):
     if subprocess.run(["hyprctl", "dispatch", "focuswindow", "class:dolphin-emu"]).returncode == 0:
         subprocess.run(["xdotool", "key", key])
@@ -22,8 +25,9 @@ async def close():
 
     return {"status": "not open"}
     
-def open(path: str):
-    close()
+async def open(path: str):
+    focusHDMI()
+    await close()
     subprocess.Popen(["dolphin-emu", "-b", "-e", path], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, start_new_session=True)
     return {"game": path}
 
@@ -45,6 +49,6 @@ def fullscreen():
 
 def pause():
     resp = sendKey("p")
-    if resp[status] == "not open":
+    if resp['status'] == "not open":
         return resp
     return {"status": "pause toggled"}

@@ -6,6 +6,7 @@ import DashboardIcon from "@mui/icons-material/Dashboard";
 import MovieIcon from "@mui/icons-material/Movie";
 
 import { useLocation, useNavigate } from "react-router-dom";
+import { GamepadIcon } from "lucide-react";
 
 export default function TopNav() {
   const location = useLocation();
@@ -37,6 +38,12 @@ export default function TopNav() {
           label="Movies"
           value="/movies"
           icon={<MovieIcon />}
+        />
+
+        <BottomNavigationAction
+          label="Games"
+          value="/games"
+          icon={<GamepadIcon/>}
         />
       </BottomNavigation>
     </Paper>
