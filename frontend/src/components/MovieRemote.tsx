@@ -50,7 +50,7 @@ export default function FullRemote({ onStopped }: { onStopped: ()=>void}) {
     movieDetails ?
     <Box sx={{display:"flex", alignItems: "center", flexDirection:"column", gap: 2}}>
         <Box sx={{display: "flex", p:2, justifyContent: "center", alignItems:"center", width: "100%", height:"100%", objectFit:"cover"}}>
-            <img src={`https://image.tmdb.org/t/p/original${movieDetails.poster_path}`} alt={movieDetails.title} style={{ width: "100%", height:"auto", borderRadius: 8}}/>
+            <img src={`https://image.tmdb.org/t/p/original${movieDetails.poster_path}`} alt={movieDetails.title} style={{ width: "100%", maxWidth: "40vh", maxHeight: "70vh", height:"auto", borderRadius: 8}}/>
         </Box>
         <Box sx={{display:"flex", gap:1, mt:1}}>
             <IconButton size="large" onClick={handleTogglePlay}>
