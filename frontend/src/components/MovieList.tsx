@@ -1,6 +1,6 @@
 import { showMovieList, play } from "../api/mpv";
 import { useEffect, useState } from "react";
-import { Grid, Box } from "@mui/material";
+import { Grid, Box, Skeleton } from "@mui/material";
 
 // Type definition for your movies
 type MovieDetails = {
@@ -11,7 +11,7 @@ type MovieDetails = {
   }
 };
 
-export default function MovieList() {
+export default function MovieList({ onChanged }: { onChanged: ()=>void}) {
   const [movies, setMovies] = useState<MovieDetails | null>(null);
 
   useEffect(() => {
@@ -22,7 +22,15 @@ export default function MovieList() {
     fetchMovies();
   }, []);
 
+  function sleep(ms: number) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
 
+  async function handlePlay(file_path: string) {
+    await play(file_path);
+    await sleep(5000);
+    onChanged();
+  }
 
   return (
     <Grid container spacing={2}>
@@ -35,12 +43,12 @@ export default function MovieList() {
                 display: "flex",
                 transition: "transform 0.2s",
                 justifyContent: "center"
-              }} onClick={() => play(movie.file_path)}>
+              }} onClick={() => handlePlay(movie.file_path)}>
                 <img src={`https://image.tmdb.org/t/p/original${movie.poster_path}`} alt={movie.title} style={{ width: "100%", height:"auto", borderRadius: 8}}/>
               </Box>
             </Grid>
           ))
-        : <p>Loading...</p>
+        : <Skeleton variant="rectangular" height={100}/>
       }
     </Grid>
   );

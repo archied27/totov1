@@ -5,20 +5,21 @@ import { useEffect, useState } from "react";
 import FullRemote from "../components/MovieRemote";
 
 export default function MpvBrowser() {
-  const [playing, setPlaying] = useState<boolean>(true)
+  const [playing, setPlaying] = useState<boolean>(false)
 
-  useEffect(() => {
-    async function getPlaying() {
+  async function getPlaying() {
       const isPlaying = await isMpvOn();
       setPlaying(isPlaying.status);
-    }
+  }
+
+  useEffect(() => {
     getPlaying();
   }, []);
 
   return (
     <div className="app">
-      {playing ? <><FullRemote/></> : <><MpvSelecter />
-      <MovieList />
+      {playing ? <><FullRemote onStopped={getPlaying}/></> : <><MpvSelecter />
+      <MovieList onChanged={getPlaying}/>
       </>}
       
     </div>
