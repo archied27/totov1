@@ -1,32 +1,22 @@
 import { ButtonGroup, Button, Box } from "@mui/material";
-import { fullscreen, close, togglePlay, getPause } from "../api/dolphin";
+import { fullscreen, close, togglePlay } from "../api/dolphin";
 import {
   Play,
   Pause,
   Square,
   Maximize
 } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 
 
 export default function DolphinRemote() {
   const [paused, setPaused] = useState(false)
 
-  async function getPauseStatus()
-  {
-    const data = await getPause()
-    setPaused(data.pause)
-  }
-
-  useEffect(() => {
-    getPauseStatus()
-  }, [])
-
   async function handleTogglePlay()
   {
     await togglePlay();
-    getPauseStatus();
+    setPaused((prev) => !prev);
   }
 
   return (

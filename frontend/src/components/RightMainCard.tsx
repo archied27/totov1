@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react"
 import { Card, CardContent, Box, IconButton, Skeleton, Typography } from "@mui/material"
-import FullRemote from "./MovieRemote"
 import { getCurrentDetails, getPause, togglePlay, close } from "../api/mpv"
 import { CloseOutlined, Pause, PlayArrow } from "@mui/icons-material"
 

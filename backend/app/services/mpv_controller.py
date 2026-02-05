@@ -162,10 +162,14 @@ def getShowsDetails():
     if shows != {}:
         for id in shows:
             details[id] = getDetails("tv", id)
+            details[id]["file_path"] = shows[id]["path"]
+            print(details)
     return details
 
 def getCurrentDetails():
     path = getPathBeingPlayed()['path']
+    if path==None:
+        return None
     if "shows" in path:
         format = "tv"
     else:

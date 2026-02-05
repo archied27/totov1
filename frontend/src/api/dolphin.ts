@@ -20,10 +20,6 @@ export function togglePlay() {
     return apiPost("/dolphin/playPause")
 }
 
-export function getPause(): Promise<{pause: boolean}> {
-  return apiGet<{pause: boolean}>("/mpv/getPause");
-}
-
 export function showGamesList(): Promise<GamesList> {
   return apiGet<GamesList>("/dolphin/gameList")
 }

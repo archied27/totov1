@@ -45,3 +45,7 @@ export function getCurrentDetails(): Promise<MovieSummary>{
 export function isMpvOn() {
   return apiGet<{status: boolean}>("/mpv/isOn");
 }
+
+export function showShowList(): Promise<MovieDetails> {
+  return apiGet<MovieDetails>("/mpv/showListPlus");
+}

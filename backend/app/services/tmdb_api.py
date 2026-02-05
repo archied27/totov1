@@ -14,6 +14,10 @@ class MovieFinder:
         response = requests.get(url, params=params)
         data = response.json()
         newData = {}
-        newData["title"] = data["original_title"]
-        newData["poster_path"] = data["poster_path"]
+        if format=="movie":
+            newData["title"] = data["original_title"]
+            newData["poster_path"] = data["poster_path"]
+        else:
+            newData["title"] = data["name"]
+            newData["poster_path"] = data["poster_path"]
         return newData
