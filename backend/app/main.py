@@ -1,8 +1,11 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.routes import mpv, dolphin, weather, calendar, spotify
+from app.databases.media_refresh import refresh
 import dotenv
 import os
+
+refresh()
 
 dotenv.load_dotenv()
 IP_ADDR = os.environ.get('IP_ADDR')

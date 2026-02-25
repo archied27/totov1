@@ -23,4 +23,5 @@ class MovieFinder:
                 newData["poster_path"] = data["poster_path"]
         else:
             print("INCORRECT ID " + movieID)
+            return 0
         return newData

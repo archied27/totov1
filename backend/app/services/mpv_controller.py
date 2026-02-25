@@ -4,6 +4,7 @@ import os
 import subprocess
 import re
 import dotenv
+import sqlite3
 from app.services.tmdb_api import MovieFinder
 
 MPV_SOCKET = "/tmp/mpvsocket"
@@ -150,6 +151,20 @@ def getDetails(format: string, id: int):
     return tmdbFinder.getDetails(format, id)
 
 def getMoviesDetails():
+    details = {}
+    print('he;lo')
+    with sqlite3.connect("app/databases/mediadb.db") as conn:
+        cur = conn.cursor()
+        cur.execute('SELECT media.tmdb_id, media.title, media.poster_path, files.file_path \
+            FROM media INNER JOIN files ON (files.media_id=media.id) WHERE type="movie"')
+        rows=cur.fetchall()
+        for row in rows:
+            details[row[0]] = {'title': row[1], 'poster_path': row[2], 'file_path': row[3]}
+    return details
+
+
+
+    """
     movies = getMovies()
     details = {}
     if movies != {}:
@@ -157,6 +172,7 @@ def getMoviesDetails():
             details[id] = getDetails("movie", id)
             details[id]["file_path"] = movies[id]["path"]
     return details
+    """
 
 def getShowsDetails():
     shows = getShows()
