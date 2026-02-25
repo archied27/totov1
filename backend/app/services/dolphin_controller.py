@@ -34,11 +34,12 @@ async def open(path: str):
 def getGames():
     games = {}
     for path in GAME_PATHS:
-        for subpath in os.listdir(path):
-            if not os.path.isfile(os.path.join(path, subpath)):
-                gamePath = os.path.join(path, subpath, "game.iso")
-                if os.path.isfile(gamePath):
-                    games[subpath] =  gamePath
+        if os.path.isdir(path):
+            for subpath in os.listdir(path):
+                if not os.path.isfile(os.path.join(path, subpath)):
+                    gamePath = os.path.join(path, subpath, "game.iso")
+                    if os.path.isfile(gamePath):
+                        games[subpath] =  gamePath
     return games
 
 def fullscreen():

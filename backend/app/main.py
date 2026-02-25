@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from app.routes import mpv, dolphin, weather, calendar
+from app.routes import mpv, dolphin, weather, calendar, spotify
 import dotenv
 import os
 
@@ -13,6 +13,7 @@ app.include_router(mpv.router, prefix="/mpv", tags=["MPV"])
 app.include_router(dolphin.router, prefix="/dolphin", tags=["DOLPHIN"])
 app.include_router(weather.router, prefix="/weather", tags=["WEATHER"])
 app.include_router(calendar.router, prefix="/calendar", tags=["CALENDAR"])
+app.include_router(spotify.router, prefix="/spotify", tags=["SPOTIFY"])
 
 
 app.add_middleware(

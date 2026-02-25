@@ -99,24 +99,26 @@ def getPause():
 def getMovies():
     movies = {}
     for path in MOVIES_PATHS:
-        for f in os.listdir(path):
-            file = os.path.join(path, f)
-            if os.path.isfile(file):
-                splitFile = removeID(f)
-                title = splitFile['newfile'].replace("-", " ")
-                movie = {"title": title[:-4], "path":file}
-                movies[splitFile['id']] = movie
+        if os.path.isdir(path):
+            for f in os.listdir(path):
+                file = os.path.join(path, f)
+                if os.path.isfile(file):
+                    splitFile = removeID(f)
+                    title = splitFile['newfile'].replace("-", " ")
+                    movie = {"title": title[:-4], "path":file}
+                    movies[splitFile['id']] = movie
     return movies
 
 def getShows():
     shows = {}
     for path in SHOWS_PATHS:
-        for subpath in os.listdir(path):
-            if not os.path.isfile(os.path.join(path, subpath)):
-                splitFile = removeID(subpath)
-                title = splitFile['newfile'].replace("-", " ")
-                show = {"title": title, "path":os.path.join(path,subpath)}
-                shows[splitFile['id']] = show
+        if os.path.isdir(path):
+            for subpath in os.listdir(path):
+                if not os.path.isfile(os.path.join(path, subpath)):
+                    splitFile = removeID(subpath)
+                    title = splitFile['newfile'].replace("-", " ")
+                    show = {"title": title, "path":os.path.join(path,subpath)}
+                    shows[splitFile['id']] = show
     return shows
 
 def getSeasons(showPath: str):
@@ -163,7 +165,6 @@ def getShowsDetails():
         for id in shows:
             details[id] = getDetails("tv", id)
             details[id]["file_path"] = shows[id]["path"]
-            print(details)
     return details
 
 def getCurrentDetails():

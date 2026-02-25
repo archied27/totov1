@@ -28,7 +28,7 @@ export default function MovieList({ onChanged, filter }: { onChanged: ()=>void; 
 
   async function handlePlay(file_path: string) {
     await play(file_path);
-    await sleep(5000);
+    await sleep(3000);
     onChanged();
   }
 
