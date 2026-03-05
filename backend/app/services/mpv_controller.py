@@ -162,12 +162,16 @@ def getMoviesDetails():
     return details
 
 def getShowsDetails():
-    shows = getShows()
     details = {}
-    if shows != {}:
-        for id in shows:
-            details[id] = getDetails("tv", id)
-            details[id]["file_path"] = shows[id]["path"]
+    with sqlite3.connect("app/databases/mediadb.db") as conn:
+        cur = conn.cursor()
+        cur.execute('SELECT tmdb_id, title, poster_path\
+            FROM media INNER JOIN files ON (files.media_id=media.id)\
+            WHERE type="show"\
+            GROUP BY tmdb_id')
+        rows=cur.fetchall()
+        for row in rows:
+            details[row[0]] = {'title': row[1], 'poster_path': row[2]}
     return details
 
 def getCurrentDetails():
