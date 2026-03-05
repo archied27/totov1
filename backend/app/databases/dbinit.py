@@ -19,6 +19,7 @@ def createSeasonsTable(cur):
         id INTEGER PRIMARY KEY AUTOINCREMENT,\
         media_id INTEGER NOT NULL,\
         season_number INTEGER NOT NULL,\
+        poster_path TEXT,\
         UNIQUE(media_id, season_number),\
         FOREIGN KEY(media_id) REFERENCES media(id) ON DELETE CASCADE)")
 
@@ -28,6 +29,7 @@ def createEpisodesTable(cur):
         season_id INTEGER NOT NULL,\
         episode_number INTEGER NOT NULL,\
         title TEXT,\
+        still_path TEXT,\
         UNIQUE(season_id, episode_number),\
         FOREIGN KEY(season_id) REFERENCES seasons(id) ON DELETE CASCADE)")
 
@@ -38,7 +40,7 @@ def createFilesTable(cur):
         episode_id INTEGER DEFAULT NULL,\
         file_path TEXT,\
         duration_seconds INTEGER NOT NULL,\
-        UNIQUE(file_path)\
+        UNIQUE(file_path),\
         FOREIGN KEY(media_id) REFERENCES media(id) ON DELETE CASCADE,\
         FOREIGN KEY(episode_id) REFERENCES episodes(id) ON DELETE CASCADE)")
 
@@ -50,7 +52,7 @@ def createPlaybackTable(cur):
         progress_seconds INTEGER DEFAULT 0,\
         last_watched DATETIME,\
         completed INTEGER DEFAULT 0,\
-        UNIQUE(media_id),\
+        UNIQUE(media_id, episode_id),\
         FOREIGN KEY(media_id) REFERENCES media(id),\
         FOREIGN KEY(episode_id) REFERENCES episodes(id))")
 

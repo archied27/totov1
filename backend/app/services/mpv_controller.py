@@ -127,7 +127,7 @@ def getSeasons(showPath: str):
     for path in os.listdir(showPath):
         if not os.path.isfile(os.path.join(showPath, path)):
             if path[0]=='s':
-                season = f"Season {path[1:]}"
+                season = path[1:]
                 seasons[season] = os.path.join(showPath, path)
     return seasons
 
@@ -136,7 +136,7 @@ def getEpisodes(seasonPath: str):
     for path in os.listdir(seasonPath):
         if os.path.isfile(os.path.join(seasonPath, path)):
             if path[0]=='e':
-                episode = f"Episode {path[1:-4]}"
+                episode = path[1:-4]
                 episodes[episode] = os.path.join(seasonPath, path)
     return episodes
 
@@ -152,7 +152,6 @@ def getDetails(format: string, id: int):
 
 def getMoviesDetails():
     details = {}
-    print('he;lo')
     with sqlite3.connect("app/databases/mediadb.db") as conn:
         cur = conn.cursor()
         cur.execute('SELECT media.tmdb_id, media.title, media.poster_path, files.file_path \
@@ -161,18 +160,6 @@ def getMoviesDetails():
         for row in rows:
             details[row[0]] = {'title': row[1], 'poster_path': row[2], 'file_path': row[3]}
     return details
-
-
-
-    """
-    movies = getMovies()
-    details = {}
-    if movies != {}:
-        for id in movies:
-            details[id] = getDetails("movie", id)
-            details[id]["file_path"] = movies[id]["path"]
-    return details
-    """
 
 def getShowsDetails():
     shows = getShows()
@@ -197,3 +184,6 @@ def getCurrentDetails():
     path = path[c+1:]
     splitFile = removeID(path)
     return getDetails(format, splitFile['id'])
+
+def getSeasonInfo(seriesid: int, seasonnum: int):
+    return tmdbFinder.getSeasonDetails(seriesid, seasonnum)

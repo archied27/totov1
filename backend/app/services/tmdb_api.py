@@ -25,3 +25,22 @@ class MovieFinder:
             print("INCORRECT ID " + movieID)
             return 0
         return newData
+
+    def getSeasonDetails(self, seriesId, seasonNum):
+        url = f"{self.baseUrl}/tv/{seriesId}/season/{seasonNum}"
+        params = {
+            "api_key" : self.apiKey,
+            "language": "en-US"
+        }
+        response = requests.get(url, params=params)
+        data = response.json()
+        newData = {}
+        if response.status_code == 200:
+            newData["episodes"] = {}
+            for episode in data["episodes"]:
+                newData["episodes"][(episode["episode_number"])] = {"name":episode["name"], "still_path":episode["still_path"]}
+            newData["poster_path"] = data["poster_path"]
+        else:
+            print(f"ERROR FETCHING {seriesId} SEASON {seasonNum}")
+            return 0
+        return newData
