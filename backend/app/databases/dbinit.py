@@ -52,9 +52,12 @@ def createPlaybackTable(cur):
         progress_seconds INTEGER DEFAULT 0,\
         last_watched DATETIME,\
         completed INTEGER DEFAULT 0,\
-        UNIQUE(media_id, episode_id),\
         FOREIGN KEY(media_id) REFERENCES media(id),\
         FOREIGN KEY(episode_id) REFERENCES episodes(id))")
+    cur.execute("CREATE UNIQUE INDEX IF NOT EXISTS unique_episode_playback\
+        ON playback(media_id, episode_id) WHERE episode_id IS NOT NULL")
+    cur.execute("CREATE UNIQUE INDEX IF NOT EXISTS unique_movie_playback\
+        ON playback(media_id) WHERE episode_id IS NULL")
 
 createMediaTable(cur)
 createSeasonsTable(cur)

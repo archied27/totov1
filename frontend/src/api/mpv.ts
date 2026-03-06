@@ -6,8 +6,17 @@ type MovieSummary = {
   file_path: string
 }
 
+type ShowSummary = {
+  title: string,
+  poster_path: string
+}
+
 type MovieDetails = {
   [key: string]: MovieSummary
+}
+
+type ShowDetails = {
+  [key: string]: ShowSummary
 }
 
 export function getTitle() {
@@ -46,6 +55,6 @@ export function isMpvOn() {
   return apiGet<{status: boolean}>("/mpv/isOn");
 }
 
-export function showShowList(): Promise<MovieDetails> {
+export function showShowList(): Promise<ShowDetails> {
   return apiGet<MovieDetails>("/mpv/showListPlus");
 }
