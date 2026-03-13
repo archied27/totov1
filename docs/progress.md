@@ -5,7 +5,7 @@
 ## 🎬 Phase 0 — Finish Media Foundation *(current)*
 
 ### Media Database & Progress
-- [ x ] Finish backend database schema for movies/shows (episodes, seasons, metadata)
+- [x] Finish backend database schema for movies/shows (episodes, seasons, metadata)
 - [ ] Add progress tracking endpoint — store watched position per item
 - [ ] Add "continue watching" query — returns items with partial progress
 - [ ] Add "mark as watched" endpoint

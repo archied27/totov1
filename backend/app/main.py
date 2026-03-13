@@ -8,7 +8,9 @@ import os
 refresh()
 
 dotenv.load_dotenv()
-IP_ADDR = os.environ.get('IP_ADDR')
+
+ip_addr = os.getenv("IP_ADDR", "")
+extra_origins = [addr.strip() for addr in ip_addr.split(",") if addr.strip()]
 
 app = FastAPI(title="toto backend")
 
@@ -24,8 +26,7 @@ app.add_middleware(
     allow_origins=[
         "http://localhost:5173",
         "http://127.0.0.1:5173",
-        IP_ADDR,
-    ],
+    ] + extra_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

@@ -6,6 +6,7 @@ import re
 import dotenv
 import sqlite3
 from app.services.tmdb_api import MovieFinder
+from datetime import date
 
 MPV_SOCKET = "/tmp/mpvsocket"
 MOVIES_PATHS = ["/media/tssd/movies"]
@@ -31,9 +32,50 @@ def testMpv():
     except (FileNotFoundError, ConnectionRefusedError, socket.error):
         return False
 
+def getCurrentPlaybackPos():
+    response = send_mpv_command("get_property", ["playback-time"])
+    return response['data']
+
+def updateShowProgress(tmdb_id: int, episode_num: int, progress: int):
+    completed = False
+    print(f"Updating show {tmdb_id} ep {episode_num} with {progress}")
+    with sqlite3.connect("app/databases/mediadb.db") as conn:
+        cur = conn.cursor()
+        cur.execute('UPDATE playback SET progress_seconds = ?, last_watched = ?, completed = ?\
+            FROM media, seasons, episodes\
+            WHERE media.tmdb_id=? AND media.type="show" AND seasons.media_id=media.id AND episodes.season_id=seasons.id\
+            AND episodes.episode_number=? AND playback.media_id=media.id AND playback.episode_id=episodes.id', \
+            (progress, date.today(), completed, tmdb_id, episode_num))
+        conn.commit()
+        cur.close()
+
+def updateMovieProgress(tmdb_id: int, progress: int):
+    completed = False
+    with sqlite3.connect("app/databases/mediadb.db") as conn:
+        cur = conn.cursor()
+        cur.execute('UPDATE playback SET progress_seconds = ?, last_watched = ?, completed = ?\
+            FROM media\
+            WHERE media.tmdb_id=? AND media.type="movie" AND playback.media_id=media.id AND playback.episode_id IS NULL',\
+            (progress, date.today(), completed, tmdb_id))
+        conn.commit()
+        cur.close()
+
+def updateProgress():
+    if testMpv():
+        playbackSeconds = getCurrentPlaybackPos()
+        idAndType = getCurrentIdandType()
+        if idAndType["type"]=="tv":
+            updateShowProgress(idAndType['id'], idAndType['episode_num'], playbackSeconds)
+        else:
+            print("h")
+            updateMovieProgress(idAndType['id'], playbackSeconds)
+    else:
+        print("tried to update progress, but mpv socket cannot be found")
+
 def closeMpv():
     if testMpv():
-       send_mpv_command("quit")
+        updateProgress()
+        send_mpv_command("quit")
     else:
         subprocess.run(["pkill", "-f", "mpv"], check=False)
     return {"status": "closed"}
@@ -69,10 +111,10 @@ def getCurrTitle():
         return {"title": title[:-4], "error": None}
 
 
-def play(path: str):
+def play(path: str, duration: int = 0):
     closeMpv()
     focusHDMI()
-    subprocess.Popen(["mpv", path, "-fs", f"--input-ipc-server={MPV_SOCKET}"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, start_new_session=True)
+    subprocess.Popen(["mpv", f"start={duration}", path, "-fs", f"--input-ipc-server={MPV_SOCKET}"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, start_new_session=True)
     return{"status": "started", "file": path}
 
 def fullscreen(val: bool):
@@ -117,6 +159,7 @@ def getShows():
             for subpath in os.listdir(path):
                 if not os.path.isfile(os.path.join(path, subpath)):
                     splitFile = removeID(subpath)
+                    print(subpath)
                     title = splitFile['newfile'].replace("-", " ")
                     show = {"title": title, "path":os.path.join(path,subpath)}
                     shows[splitFile['id']] = show
@@ -179,6 +222,25 @@ def getCurrentDetails():
     if path==None:
         return None
     if "shows" in path:
+        print(path)
+        format = "tv"
+        while(path[c] != '/'):
+                c-=1
+        episodeSubPath = path[c+1:]
+    else:
+        format = "movie"
+        c = -1
+        while(path[c] != '/'):
+                c-=1
+        path = path[c+1:]
+    splitFile = removeID(path)
+    return getDetails(format, splitFile['id'])
+
+def getCurrentIdandType():
+    path = getPathBeingPlayed()['path']
+    if path==None:
+        return None
+    if "shows" in path:
         format = "tv"
     else:
         format = "movie"
@@ -187,7 +249,13 @@ def getCurrentDetails():
             c-=1
     path = path[c+1:]
     splitFile = removeID(path)
-    return getDetails(format, splitFile['id'])
+    print(splitFile)
+
+    episode_num = None if format=="movie" else getEpisodeFromFile(splitFile['newfile']) 
+    return {'id':splitFile['id'], 'type':format, 'episode_num': episode_num}
+
+def getEpisodeFromFile(file: str):
+    return int(file[1:-4])
 
 def getSeasonInfo(seriesid: int, seasonnum: int):
     return tmdbFinder.getSeasonDetails(seriesid, seasonnum)
