@@ -67,7 +67,6 @@ def updateProgress():
         if idAndType["type"]=="tv":
             updateShowProgress(idAndType['id'], idAndType['episode_num'], playbackSeconds)
         else:
-            print("h")
             updateMovieProgress(idAndType['id'], playbackSeconds)
     else:
         print("tried to update progress, but mpv socket cannot be found")
@@ -159,7 +158,6 @@ def getShows():
             for subpath in os.listdir(path):
                 if not os.path.isfile(os.path.join(path, subpath)):
                     splitFile = removeID(subpath)
-                    print(subpath)
                     title = splitFile['newfile'].replace("-", " ")
                     show = {"title": title, "path":os.path.join(path,subpath)}
                     shows[splitFile['id']] = show
@@ -222,11 +220,14 @@ def getCurrentDetails():
     if path==None:
         return None
     if "shows" in path:
-        print(path)
         format = "tv"
-        while(path[c] != '/'):
+        c = -1
+        n = 2
+        while(n>=0):
+                if path[c] == '/':
+                    n-=1
                 c-=1
-        episodeSubPath = path[c+1:]
+        path = path[c+2:]
     else:
         format = "movie"
         c = -1
@@ -249,7 +250,6 @@ def getCurrentIdandType():
             c-=1
     path = path[c+1:]
     splitFile = removeID(path)
-    print(splitFile)
 
     episode_num = None if format=="movie" else getEpisodeFromFile(splitFile['newfile']) 
     return {'id':splitFile['id'], 'type':format, 'episode_num': episode_num}
